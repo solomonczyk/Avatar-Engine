@@ -34,6 +34,7 @@ pythonpath = ["src"]
 addopts = "-q --basetemp=data/runtime/pytest"
 markers = [
   "local_comfyui: requires a local ComfyUI server",
+  "local_talking_head: requires a local talking-head runtime",
   "gpu: requires the local GPU runtime",
   "real_generation: performs one real generation",
 ]

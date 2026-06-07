@@ -8,6 +8,8 @@
 - `src/avatar_engine/integrations/comfyui/generation_limit.py`: one-submit runtime counters.
 - `src/avatar_engine/integrations/comfyui/image_validation.py`: Pillow technical validation.
 - `src/avatar_engine/pipeline/stages/comfyui_image.py`: controlled real image pipeline.
+- `src/avatar_engine/integrations/talking_head/`: reference/audio/video validation, runtime selection, fake subprocess adapter, and one-attempt counters.
+- `src/avatar_engine/pipeline/stages/talking_head.py`: parameterized talking-head pipeline and blocker path.
 
 ```text
 Avatar Engine/

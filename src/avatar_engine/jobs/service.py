@@ -78,3 +78,30 @@ class JobService:
             "poll_interval": poll_interval,
         }
         return self.repository.create_job(input_data, comfyui_image_stage_names())
+
+    def create_talking_head_job(
+        self,
+        *,
+        reference_image: str,
+        audio: str | None = None,
+        text: str | None = None,
+        allow_fake_runtime: bool = False,
+    ) -> str:
+        from avatar_engine.pipeline.stages.talking_head import talking_head_stage_names
+
+        self.init_db()
+        if bool(audio) == bool(text):
+            raise ValueError("Choose exactly one of audio or text")
+        input_data: dict[str, Any] = {
+            "mode": "talking_head",
+            "reference_image_path": reference_image,
+            "audio_path": audio,
+            "text": text or "",
+            "reference_image_mode": "job_input",
+            "reference_image_hardcoded": False,
+            "system_bound_to_single_reference": False,
+            "max_talking_head_generations": 1,
+            "automatic_retry_enabled": False,
+            "allow_fake_runtime": allow_fake_runtime,
+        }
+        return self.repository.create_job(input_data, talking_head_stage_names())

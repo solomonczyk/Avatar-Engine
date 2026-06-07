@@ -4,6 +4,7 @@ from avatar_engine.config import Settings, get_settings
 from avatar_engine.jobs.repository import JobRepository
 from avatar_engine.pipeline.runner import PipelineRunner, fake_stages
 from avatar_engine.pipeline.stages.comfyui_image import comfyui_image_stages
+from avatar_engine.pipeline.stages.talking_head import talking_head_stages
 
 
 class Worker:
@@ -15,8 +16,8 @@ class Worker:
         self.settings.ensure_directories()
         self.repository.init()
         requested_mode = mode.replace("-", "_")
-        if requested_mode not in {"auto", "fake", "comfyui_image"}:
-            raise ValueError("Worker mode must be auto, fake, or comfyui-image")
+        if requested_mode not in {"auto", "fake", "comfyui_image", "talking_head"}:
+            raise ValueError("Worker mode must be auto, fake, comfyui-image, or talking-head")
         job_id = self.repository.claim_next_job(None if requested_mode == "auto" else requested_mode)
         if job_id is None:
             return None
@@ -30,6 +31,8 @@ class Worker:
             stages = fake_stages()
         elif job_mode == "comfyui_image":
             stages = comfyui_image_stages()
+        elif job_mode == "talking_head":
+            stages = talking_head_stages()
         else:
             raise ValueError(f"Unsupported job mode: {job_mode}")
         PipelineRunner(self.settings, self.repository, stages).run(job_id)

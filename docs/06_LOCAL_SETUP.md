@@ -26,6 +26,32 @@ avatar-engine show-job <job_id>
 
 Do not rerun the worker for the same job after a submit. A valid image stops at `operator_visual_review_required`; use `review` only after manual visual inspection.
 
+## Talking-head input validation
+
+Universal audio-file command:
+
+```powershell
+avatar-engine create-job `
+  --mode talking-head `
+  --reference-image "<path>" `
+  --audio "<path>"
+
+avatar-engine run-worker --once --mode talking-head
+```
+
+Universal text command:
+
+```powershell
+avatar-engine create-job `
+  --mode talking-head `
+  --reference-image "<path>" `
+  --text "<text>"
+
+avatar-engine run-worker --once --mode talking-head
+```
+
+The reference image is job input, not a global default. If no local talking-head runtime is fully ready and authorized, the worker writes a runtime-selection artifact and stops before execution. Normal tests use only the explicit fake runtime.
+
 ## Target
 
 ```powershell

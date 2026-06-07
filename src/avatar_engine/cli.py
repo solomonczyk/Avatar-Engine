@@ -89,6 +89,8 @@ def init_db() -> None:
 def create_job(
     portrait: Optional[str] = typer.Option(None, "--portrait"),
     audio: Optional[str] = typer.Option(None, "--audio"),
+    reference_image: Optional[str] = typer.Option(None, "--reference-image"),
+    text: Optional[str] = typer.Option(None, "--text"),
     mode: str = typer.Option("fake", "--mode"),
     dry_run: bool = typer.Option(False, "--dry-run"),
     workflow: str = typer.Option("workflows/simple_portrait.json", "--workflow"),
@@ -120,8 +122,16 @@ def create_job(
             sampler=sampler,
             scheduler=scheduler,
         )
+    elif normalized_mode == "talking_head":
+        if reference_image is None:
+            raise typer.BadParameter("--reference-image is required for talking-head mode")
+        job_id = JobService().create_talking_head_job(
+            reference_image=reference_image,
+            audio=audio,
+            text=text,
+        )
     else:
-        raise typer.BadParameter("Mode must be fake or comfyui-image")
+        raise typer.BadParameter("Mode must be fake, comfyui-image, or talking-head")
     typer.echo(job_id)
 
 

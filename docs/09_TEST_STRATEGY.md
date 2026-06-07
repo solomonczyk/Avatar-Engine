@@ -21,6 +21,31 @@ Real local tests should use:
 @pytest.mark.real_generation
 ```
 
+## Talking-head tests
+
+Normal `pytest -q` uses generated local fixtures and an explicit fake subprocess adapter. Coverage includes:
+
+- parameterized reference-image job input;
+- proof that the test reference image is not hardcoded;
+- reference image validation;
+- audio validation and normalization;
+- runtime selection blocker artifacts;
+- one-attempt generation limit;
+- fake subprocess adapter logs/output;
+- MP4 technical validation;
+- manifest and operator review packet flags;
+- worker flow, no-retry failure, and output isolation.
+
+Real talking-head tests must be marked:
+
+```text
+@pytest.mark.local_talking_head
+@pytest.mark.gpu
+@pytest.mark.real_generation
+```
+
+They are skipped from the normal suite until runtime assets and an executable adapter are explicitly authorized.
+
 ## Unit tests
 
 - state transitions;

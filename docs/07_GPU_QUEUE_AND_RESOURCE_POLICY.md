@@ -4,6 +4,8 @@
 
 For `comfyui_image`, the GPU stage is `submit_comfyui_workflow`. The lock covers the HTTP submit, ComfyUI history wait, output collection, and output download.
 
+For `talking_head`, the GPU stage is `execute_talking_head_once`. The lock wraps one subprocess execution only. The lock payload includes `pid`, `job_id`, `stage`, `runtime`, and `started_at`; release is performed in the runner `finally` block.
+
 The job records:
 
 ```json
@@ -32,6 +34,20 @@ Any second submit attempt is blocked in-process. Polling `/history/<prompt_id>` 
   "parallel_gpu_stages": false
 }
 ```
+
+Talking-head counters:
+
+```json
+{
+  "talking_head_attempts": 0,
+  "max_talking_head_generations": 1,
+  "automatic_retry_enabled": false,
+  "automatic_retry_executed": false,
+  "second_runtime_attempted": false
+}
+```
+
+After a talking-head subprocess starts, `talking_head_attempts` becomes `1`. Runtime switching after that point is a blocked second attempt.
 
 ## Lock
 

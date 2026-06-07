@@ -16,6 +16,7 @@ class GpuLockInfo:
     job_id: str
     stage: str
     started_at: str
+    runtime: str = ""
 
 
 class GpuLockBusy(RuntimeError):
@@ -28,13 +29,13 @@ class GpuLock:
         self.guard_path = path.with_suffix(path.suffix + ".guard")
         self._guard = FileLock(str(self.guard_path), timeout=0)
 
-    def acquire(self, job_id: str, stage: str) -> GpuLockInfo:
+    def acquire(self, job_id: str, stage: str, runtime: str = "") -> GpuLockInfo:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         try:
             self._guard.acquire(timeout=0)
         except Timeout as exc:
             raise GpuLockBusy("GPU lock is already held") from exc
-        info = GpuLockInfo(pid=os.getpid(), job_id=job_id, stage=stage, started_at=utc_now())
+        info = GpuLockInfo(pid=os.getpid(), job_id=job_id, stage=stage, started_at=utc_now(), runtime=runtime)
         self.path.write_text(json.dumps(info.__dict__, indent=2), encoding="utf-8")
         return info
 

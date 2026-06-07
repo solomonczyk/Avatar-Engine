@@ -30,11 +30,25 @@
 
 - valid input portrait;
 - valid audio;
+- reference image supplied as a job parameter, not a hardcoded default;
 - animation/lip-sync completed;
+- exactly one talking-head execution attempt;
+- no automatic retry or second runtime attempt;
 - final MP4 exists;
 - video and audio streams present;
 - manifest complete;
 - state is `operator_visual_review_required`.
+
+If no talking-head runtime is ready, technical acceptance is blocked rather than faked. Required blocker state:
+
+```json
+{
+  "verdict": "PASS WITH BLOCKERS",
+  "real_talking_head_generation_executed": false,
+  "talking_head_attempts": 0,
+  "next_allowed_action": "talking_head_runtime_asset_authorization_required"
+}
+```
 
 ## Full avatar accepted visually
 

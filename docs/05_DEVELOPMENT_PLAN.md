@@ -6,6 +6,10 @@ ComfyUI integration now includes local health checks, typed submit/history/outpu
 
 Stop point: `operator_visual_review_required`. The next layer starts only after manual operator review of the actual image.
 
+## Milestone 3/4 status
+
+The talking-head job mode now accepts `--reference-image` plus either `--audio` or `--text`, validates and copies job-scoped inputs, normalizes audio, selects runtime candidates, enforces one execution attempt, validates MP4 output, creates preview artifacts, and builds manifest/review packets. The normal test path uses an explicit fake subprocess adapter. Real talking-head generation currently stops with `talking_head_runtime_asset_authorization_required` because no authorized executable runtime adapter is configured in this layer.
+
 ## Milestone 0 — Bootstrap and selective import
 
 Result:

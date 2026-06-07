@@ -1,8 +1,8 @@
 # Avatar Engine
 
-Avatar Engine is a local, single-user foundation for building an avatar generation pipeline on Windows. This layer keeps the original fake pipeline and adds one controlled real ComfyUI image-generation path.
+Avatar Engine is a local, single-user foundation for building an avatar generation pipeline on Windows. This layer keeps the original fake pipeline, adds one controlled real ComfyUI image-generation path, and adds a parameterized talking-head job surface that can validate inputs and stop with a runtime-asset blocker before real model inference.
 
-This layer does not run talking avatar, video, lip-sync, TTS, face swap, upscale, automatic retry, or production acceptance.
+This layer does not run real talking avatar/lip-sync inference, face swap, upscale, automatic retry, or production acceptance.
 
 ## Quick Start
 
@@ -48,13 +48,33 @@ avatar-engine show-job <job_id>
 
 The job writes `job.json`, preflight, source/patched workflow snapshots, patch report, submit/history logs, one output image, `image_validation.json`, `manifest.json`, and `operator_review_packet.json` under `data/jobs/<job_id>/`. A technically valid image stops at `operator_visual_review_required`.
 
+## Parameterized Talking Head
+
+Talking-head jobs always receive the reference image as a job parameter. There is no default identity image.
+
+```powershell
+avatar-engine create-job `
+  --mode talking-head `
+  --reference-image "<path>" `
+  --audio "<path>"
+```
+
+```powershell
+avatar-engine create-job `
+  --mode talking-head `
+  --reference-image "<path>" `
+  --text "<text>"
+```
+
+The worker validates the reference image, copies it into `data/jobs/<job_id>/input/reference/`, prepares or validates audio, writes `preflight/talking_head_runtime_selection.json`, and stops before execution if no authorized local runtime adapter and weights are available. Normal tests use an explicit fake subprocess adapter only.
+
 ## Project Shape
 
 ```text
 CLI
 -> SQLite job queue
 -> single worker
--> sequential fake or comfyui_image pipeline
+-> sequential fake, comfyui_image, or talking_head pipeline
 -> fake or real ComfyUI interface
 -> artifacts and manifests
 -> operator visual review required
@@ -68,7 +88,7 @@ CLI
 - No authentication, accounts, roles, public API, or multi-agent runtime.
 - No heavy ML dependencies in the core package.
 - No automatic retry.
-- Real generation is limited to one `comfyui_image` submit per job.
+- Real generation is limited to one `comfyui_image` submit per job. Talking-head model inference is blocked until a local adapter and authorized assets are available.
 - No production acceptance without manual operator review.
 
 ## Commands
@@ -82,6 +102,7 @@ avatar-engine show-job <job_id>
 avatar-engine comfyui-health
 avatar-engine run-worker --once --mode fake
 avatar-engine run-worker --once --mode comfyui-image
+avatar-engine run-worker --once --mode talking-head
 avatar-engine review <job_id> --accept
 avatar-engine review <job_id> --reject --notes "reason"
 ```

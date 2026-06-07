@@ -1,5 +1,18 @@
 # Reuse Ledger
 
+### REUSE-007
+
+- Source repository: none
+- Source commit: not applicable
+- Source path: clean-room talking-head runtime selection and validation design
+- Target path: src/avatar_engine/integrations/talking_head, src/avatar_engine/pipeline/stages/talking_head.py
+- Reuse type: original
+- Reason: Add parameterized reference-image talking-head job control without hardcoding a test identity or running unauthorized model inference.
+- Changes: Implemented fresh reference/audio/video validators, runtime selection artifacts, fake subprocess adapter, one-attempt counters, manifest, and operator review packet.
+- Dependencies: Python standard library, Pillow, local FFmpeg/FFprobe
+- Tests: tests/unit/test_reference_image_job_input.py, tests/unit/test_reference_image_not_hardcoded.py, tests/unit/test_reference_image_validation.py, tests/unit/test_audio_validation.py, tests/unit/test_talking_head_runtime_selection.py, tests/unit/test_talking_head_generation_limit.py, tests/unit/test_talking_head_subprocess_adapter.py, tests/unit/test_video_validation.py, tests/unit/test_talking_head_manifest.py, tests/integration/test_talking_head_fake_runtime.py, tests/integration/test_talking_head_worker_flow.py, tests/integration/test_talking_head_failure_no_retry.py, tests/integration/test_talking_head_output_isolation.py
+- License reviewed: no source code copied
+
 ### REUSE-005
 
 - Source repository: https://github.com/solomonczyk/comfy-agent-mvp

@@ -24,4 +24,4 @@ Before implementation work, read the documentation in `docs/`, especially:
 - `docs/07_GPU_QUEUE_AND_RESOURCE_POLICY.md`
 - `docs/13_AGENT_IMPLEMENTATION_BRIEF.md`
 
-This bootstrap layer must stay local, single-user, SQLite-backed, and fake-generation-only. Do not add Redis, Celery, PostgreSQL, Kubernetes, Docker orchestration, authentication, accounts, roles, public APIs, cloud deployment, distributed workers, multi-agent runtimes, heavy ML dependencies, automatic retry, or real generation.
+This bootstrap layer must stay local, single-user, SQLite-backed, and fake-generation-only for talking-head/lip-sync work. The talking-head job surface may validate parameterized reference images and audio, inspect local runtime candidates, and exercise an explicit fake subprocess adapter in tests, but it must not run real talking-head model inference without a later operator-approved scope change. Do not add Redis, Celery, PostgreSQL, Kubernetes, Docker orchestration, authentication, accounts, roles, public APIs, cloud deployment, distributed workers, multi-agent runtimes, heavy ML dependencies, automatic retry, or unauthorized real generation.

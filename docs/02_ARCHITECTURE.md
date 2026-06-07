@@ -19,6 +19,28 @@ The GPU lock wraps `submit_comfyui_workflow`, including the submit, wait, and ou
 
 Artifacts are written under `data/jobs/<job_id>/`: `job.json`, preflight JSON, source/patched workflow snapshots, patch report, submit/history logs, one image, technical image validation, manifest, and operator review packet.
 
+## Parameterized talking-head mode
+
+`talking_head` is a sibling job mode for `reference image + audio/text`. The reference image is always passed as job input through `--reference-image` or `reference_image_path`; no image path or identity is hardcoded globally.
+
+```text
+validate_reference_image
+-> prepare_job_reference_copy
+-> prepare_audio
+-> select_talking_head_runtime
+-> runtime_preflight
+-> acquire_gpu_lock
+-> execute_talking_head_once
+-> release_gpu_lock
+-> collect_video
+-> validate_video
+-> create_preview_artifacts
+-> build_manifest
+-> operator_visual_review_required
+```
+
+The normal suite uses an explicit `fake_talking_head` subprocess adapter. Real talking-head inference remains blocked unless runtime code, weights, license compatibility, GPU suitability, and an implemented subprocess adapter are all present. If no runtime is ready, the job writes `preflight/talking_head_runtime_selection.json`, records `talking_head_attempts: 0`, and stops with `talking_head_runtime_asset_authorization_required`.
+
 ## Architectural principle
 
 Минимальная локальная архитектура без enterprise-усложнения.

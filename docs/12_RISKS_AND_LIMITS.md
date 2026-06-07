@@ -58,6 +58,19 @@ Before adding a model:
 - do not redistribute weights;
 - use only faces and voices with permission.
 
+## Talking-head runtime blocker
+
+The current code can validate talking-head inputs and exercise a fake subprocess adapter, but real model execution is blocked until all of the following are true:
+
+- runtime code exists locally;
+- required weights already exist locally or downloads are explicitly authorized;
+- license is compatible with personal non-commercial use;
+- GTX 1060 5 GB compatibility is credible;
+- a subprocess adapter is implemented for that runtime;
+- the operator approves one real attempt.
+
+Do not infer readiness from folder names alone.
+
 ## Scope creep
 
 Main risk is rebuilding the entire `comfy-agent-mvp`.

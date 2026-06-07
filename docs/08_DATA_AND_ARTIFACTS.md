@@ -1,5 +1,38 @@
 # 08. Data and Artifacts
 
+## Talking-head job folder
+
+```text
+data/jobs/<job_id>/
+├─ job.json
+├─ input/
+│  ├─ reference/
+│  └─ audio/
+├─ preflight/
+│  ├─ reference_image_validation.json
+│  ├─ audio_validation.json
+│  ├─ talking_head_runtime_selection.json
+│  └─ talking_head_runtime_preflight.json
+├─ work/
+│  └─ talking_head/
+├─ output/
+│  └─ <job_id>_talking_head.mp4
+├─ preview/
+│  ├─ first_frame.png
+│  ├─ middle_frame.png
+│  ├─ last_frame.png
+│  └─ contact_sheet.png
+├─ logs/
+│  ├─ runtime_command.json
+│  ├─ runtime_stdout.log
+│  └─ runtime_stderr.log
+├─ video_validation.json
+├─ manifest.json
+└─ operator_review_packet.json
+```
+
+If runtime selection blocks, execution artifacts are absent and `talking_head_attempts` remains `0`.
+
 ## Job folder
 
 ```text
