@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+
+# Environments
+.env
+.venv/
+.venv-*/
+
+# Runtime data
+data/avatar_engine.db
+data/*.db
+data/jobs/*
+!data/jobs/.gitkeep
+data/input/*
+!data/input/.gitkeep
+data/output/*
+!data/output/.gitkeep
+data/logs/*
+!data/logs/.gitkeep
+data/runtime/*
+!data/runtime/.gitkeep
+
+# Generated and local media
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wav
+*.mp3
+*.png
+*.jpg
+*.jpeg
+*.webp
+
+# Local references and model weights
+comfy-agent-mvp-reference/
+models/
+*.ckpt
+*.safetensors
+*.onnx
+*.pth
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
