@@ -1,5 +1,26 @@
 # 09. Test Strategy
 
+## Real ComfyUI image tests
+
+Normal `pytest -q` uses fake clients and does not require local ComfyUI. Coverage now includes:
+
+- successful submit parsing;
+- malformed prompt ID rejection;
+- wait timeout without retry;
+- missing workflow patch target reports;
+- second submit blocking;
+- invalid/blank image rejection;
+- valid image technical acceptance;
+- `comfyui_image` job stopping at `operator_visual_review_required`.
+
+Real local tests should use:
+
+```text
+@pytest.mark.local_comfyui
+@pytest.mark.gpu
+@pytest.mark.real_generation
+```
+
 ## Unit tests
 
 - state transitions;

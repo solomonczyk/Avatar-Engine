@@ -1,5 +1,14 @@
 # 04. Project Structure
 
+## Real ComfyUI image additions
+
+- `workflows/simple_portrait.json`: minimal one-image txt2img workflow.
+- `src/avatar_engine/integrations/comfyui/client.py`: real HTTP health, submit, history, wait, and output download.
+- `src/avatar_engine/integrations/comfyui/preflight.py`: workflow/model/node preflight.
+- `src/avatar_engine/integrations/comfyui/generation_limit.py`: one-submit runtime counters.
+- `src/avatar_engine/integrations/comfyui/image_validation.py`: Pillow technical validation.
+- `src/avatar_engine/pipeline/stages/comfyui_image.py`: controlled real image pipeline.
+
 ```text
 Avatar Engine/
 ├─ src/

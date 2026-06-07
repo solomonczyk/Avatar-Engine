@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from pathlib import Path
-
-from avatar_engine.models import Artifact, HealthResult, HistoryResult, SubmitResult
+from avatar_engine.models import ComfyUIOutput, HealthResult, HistoryResult, ObjectInfoResult, SubmitResult, SystemStatsResult
 
 
 class FakeComfyUIClient:
@@ -10,6 +8,22 @@ class FakeComfyUIClient:
 
     def health(self) -> HealthResult:
         return HealthResult(available=True, status="available", details={"fake": True})
+
+    def get_system_stats(self) -> SystemStatsResult:
+        return SystemStatsResult(received=True, details={"fake": True})
+
+    def get_object_info(self) -> ObjectInfoResult:
+        return ObjectInfoResult(
+            received=True,
+            details={
+                "CheckpointLoaderSimple": {"input": {"required": {"ckpt_name": [["fake.safetensors"], {}]}}},
+                "CLIPTextEncode": {},
+                "KSampler": {},
+                "EmptyLatentImage": {},
+                "VAEDecode": {},
+                "SaveImage": {},
+            },
+        )
 
     def submit_workflow(self, workflow: dict) -> SubmitResult:
         return SubmitResult(
@@ -21,13 +35,16 @@ class FakeComfyUIClient:
     def get_history(self, prompt_id: str) -> HistoryResult:
         return HistoryResult(prompt_id=prompt_id, status="completed", details={"fake": True})
 
-    def collect_outputs(self, prompt_id: str) -> list[Artifact]:
+    def wait_for_completion(self, prompt_id: str, timeout_seconds: float, poll_interval: float) -> HistoryResult:
+        return self.get_history(prompt_id)
+
+    def collect_outputs(self, prompt_id: str) -> list[ComfyUIOutput]:
         return [
-            Artifact(
-                artifact_type="fake_comfyui_output_metadata",
-                path=Path(f"fake://{prompt_id}/metadata.json"),
-                sha256="",
-                size_bytes=0,
-                stage_name="fake_comfyui",
+            ComfyUIOutput(
+                prompt_id=prompt_id,
+                node_id="9",
+                filename="fake.png",
+                subfolder="",
+                output_type="output",
             )
         ]

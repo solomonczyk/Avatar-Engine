@@ -1,5 +1,11 @@
 # 05. Development Plan
 
+## Milestone 2 status
+
+ComfyUI integration now includes local health checks, typed submit/history/output collection, workflow patch reporting, a one-image `comfyui_image` job mode, technical image validation, manifest generation, and an operator review packet.
+
+Stop point: `operator_visual_review_required`. The next layer starts only after manual operator review of the actual image.
+
 ## Milestone 0 — Bootstrap and selective import
 
 Result:

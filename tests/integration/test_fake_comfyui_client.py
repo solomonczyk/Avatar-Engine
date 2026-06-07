@@ -7,4 +7,4 @@ def test_fake_comfyui_client_never_submits_real_workflow() -> None:
     assert submit.prompt_id == "fake-prompt-avatar-engine-0001"
     assert submit.submitted is False
     assert client.health().available is True
-    assert client.collect_outputs(submit.prompt_id)[0].artifact_type == "fake_comfyui_output_metadata"
+    assert client.collect_outputs(submit.prompt_id)[0].filename == "fake.png"

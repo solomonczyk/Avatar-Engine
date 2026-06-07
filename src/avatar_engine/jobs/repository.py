@@ -106,7 +106,7 @@ class JobRepository:
                 (job_id,),
             ).fetchall()
 
-    def claim_next_job(self) -> str | None:
+    def claim_next_job(self, mode: str | None = None) -> str | None:
         self.init()
         now = utc_now()
         with connect(self.db_path) as conn:
@@ -119,15 +119,26 @@ class JobRepository:
             if running:
                 conn.execute("COMMIT")
                 return None
-            row = conn.execute(
-                """
-                SELECT id FROM jobs
-                WHERE status = ?
-                ORDER BY created_at ASC
-                LIMIT 1
-                """,
-                (JobState.QUEUED.value,),
-            ).fetchone()
+            if mode is None:
+                row = conn.execute(
+                    """
+                    SELECT id FROM jobs
+                    WHERE status = ?
+                    ORDER BY created_at ASC
+                    LIMIT 1
+                    """,
+                    (JobState.QUEUED.value,),
+                ).fetchone()
+            else:
+                row = conn.execute(
+                    """
+                    SELECT id FROM jobs
+                    WHERE status = ? AND json_extract(input_json, '$.mode') = ?
+                    ORDER BY created_at ASC
+                    LIMIT 1
+                    """,
+                    (JobState.QUEUED.value, mode),
+                ).fetchone()
             if not row:
                 conn.execute("COMMIT")
                 return None

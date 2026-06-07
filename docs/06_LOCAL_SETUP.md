@@ -1,5 +1,31 @@
 # 06. Local Setup
 
+## Controlled ComfyUI image execution
+
+Start local ComfyUI separately and verify:
+
+```powershell
+avatar-engine comfyui-health
+```
+
+Queue and run one real image job:
+
+```powershell
+avatar-engine create-job `
+  --mode comfyui-image `
+  --workflow "workflows\simple_portrait.json" `
+  --seed 20260607 `
+  --width 512 `
+  --height 512 `
+  --steps 15 `
+  --cfg 6.5
+
+avatar-engine run-worker --once --mode comfyui-image
+avatar-engine show-job <job_id>
+```
+
+Do not rerun the worker for the same job after a submit. A valid image stops at `operator_visual_review_required`; use `review` only after manual visual inspection.
+
 ## Target
 
 ```powershell

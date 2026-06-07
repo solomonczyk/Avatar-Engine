@@ -61,3 +61,24 @@ class HistoryResult:
     prompt_id: str
     status: str
     details: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class SystemStatsResult:
+    received: bool
+    details: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class ObjectInfoResult:
+    received: bool
+    details: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class ComfyUIOutput:
+    prompt_id: str
+    node_id: str
+    filename: str
+    subfolder: str
+    output_type: str

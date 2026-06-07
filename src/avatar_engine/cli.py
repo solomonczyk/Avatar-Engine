@@ -6,11 +6,13 @@ import subprocess
 import sys
 from typing import Optional
 
+import httpx
 import typer
 
 from avatar_engine.config import get_settings
 from avatar_engine.db import init_database
 from avatar_engine.integrations.comfyui.client import HttpComfyUIClient
+from avatar_engine.pipeline.stages.comfyui_image import DEFAULT_NEGATIVE_PROMPT, DEFAULT_PROMPT
 from avatar_engine.jobs.repository import JobRepository
 from avatar_engine.jobs.service import JobService
 from avatar_engine.jobs.worker import Worker
@@ -51,6 +53,30 @@ def doctor(check_comfyui: bool = False) -> None:
     typer.echo(json.dumps(payload, indent=2, sort_keys=True))
 
 
+@app.command("comfyui-health")
+def comfyui_health() -> None:
+    settings = get_settings()
+    client = HttpComfyUIClient(settings.comfyui_base_url)
+    health = client.health()
+    payload = {
+        "comfyui_reachable": health.available,
+        "base_url": settings.comfyui_base_url,
+        "system_stats_received": False,
+        "object_info_received": False,
+        "history_received": False,
+    }
+    if health.available:
+        payload["system_stats_received"] = client.get_system_stats().received
+        payload["object_info_received"] = client.get_object_info().received
+        try:
+            response = httpx.get(f"{settings.comfyui_base_url.rstrip('/')}/history", timeout=10.0)
+            payload["history_received"] = response.is_success
+            payload["history_status_code"] = response.status_code
+        except httpx.HTTPError as exc:
+            payload["history_error"] = str(exc)
+    typer.echo(json.dumps(payload, indent=2, sort_keys=True))
+
+
 @app.command("init-db")
 def init_db() -> None:
     settings = get_settings()
@@ -65,10 +91,37 @@ def create_job(
     audio: Optional[str] = typer.Option(None, "--audio"),
     mode: str = typer.Option("fake", "--mode"),
     dry_run: bool = typer.Option(False, "--dry-run"),
+    workflow: str = typer.Option("workflows/simple_portrait.json", "--workflow"),
+    prompt: str = typer.Option(DEFAULT_PROMPT, "--prompt"),
+    negative_prompt: str = typer.Option(DEFAULT_NEGATIVE_PROMPT, "--negative-prompt"),
+    checkpoint: Optional[str] = typer.Option(None, "--checkpoint"),
+    seed: int = typer.Option(20260607, "--seed"),
+    width: int = typer.Option(512, "--width"),
+    height: int = typer.Option(512, "--height"),
+    steps: int = typer.Option(15, "--steps"),
+    cfg: float = typer.Option(6.5, "--cfg"),
+    sampler: str = typer.Option("euler", "--sampler"),
+    scheduler: str = typer.Option("normal", "--scheduler"),
 ) -> None:
-    if mode != "fake":
-        raise typer.BadParameter("Only --mode fake is allowed in the bootstrap layer")
-    job_id = JobService().create_fake_job(portrait=portrait, audio=audio, dry_run=dry_run, mode=mode)
+    normalized_mode = mode.replace("-", "_")
+    if normalized_mode == "fake":
+        job_id = JobService().create_fake_job(portrait=portrait, audio=audio, dry_run=dry_run, mode="fake")
+    elif normalized_mode == "comfyui_image":
+        job_id = JobService().create_comfyui_image_job(
+            workflow=workflow,
+            prompt=prompt,
+            negative_prompt=negative_prompt,
+            checkpoint=checkpoint,
+            seed=seed,
+            width=width,
+            height=height,
+            steps=steps,
+            cfg=cfg,
+            sampler=sampler,
+            scheduler=scheduler,
+        )
+    else:
+        raise typer.BadParameter("Mode must be fake or comfyui-image")
     typer.echo(job_id)
 
 
@@ -105,7 +158,7 @@ def show_job(job_id: str) -> None:
 
 
 @app.command("run-worker")
-def run_worker(once: bool = typer.Option(False, "--once"), mode: str = typer.Option("fake", "--mode")) -> None:
+def run_worker(once: bool = typer.Option(False, "--once"), mode: str = typer.Option("auto", "--mode")) -> None:
     if not once:
         raise typer.BadParameter("Bootstrap worker requires --once")
     job_id = Worker().run_once(mode=mode)

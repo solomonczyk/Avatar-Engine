@@ -1,5 +1,23 @@
 # 07. GPU Queue and Resource Policy
 
+## ComfyUI image generation lock scope
+
+For `comfyui_image`, the GPU stage is `submit_comfyui_workflow`. The lock covers the HTTP submit, ComfyUI history wait, output collection, and output download.
+
+The job records:
+
+```json
+{
+  "submit_attempts": 1,
+  "successful_submits": 1,
+  "generation_attempts": 1,
+  "max_generations": 1,
+  "automatic_retry_executed": false
+}
+```
+
+Any second submit attempt is blocked in-process. Polling `/history/<prompt_id>` is allowed and is not a second generation.
+
 ## Purpose
 
 Не ускорять параллельностью, а обеспечить стабильное последовательное выполнение.

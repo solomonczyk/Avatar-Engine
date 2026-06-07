@@ -1,5 +1,24 @@
 # 02. Architecture
 
+## Controlled ComfyUI image mode
+
+`comfyui_image` is the first real ComfyUI path. It remains local, single-user, SQLite-backed, and one-worker only.
+
+```text
+validate_inputs
+-> comfyui_preflight
+-> load_workflow
+-> patch_workflow
+-> submit_comfyui_workflow
+-> validate_image
+-> build_manifest
+-> operator_visual_review_required
+```
+
+The GPU lock wraps `submit_comfyui_workflow`, including the submit, wait, and output download. Runtime counters enforce one submit/generation attempt per job. Polling history is not counted as another generation.
+
+Artifacts are written under `data/jobs/<job_id>/`: `job.json`, preflight JSON, source/patched workflow snapshots, patch report, submit/history logs, one image, technical image validation, manifest, and operator review packet.
+
 ## Architectural principle
 
 Минимальная локальная архитектура без enterprise-усложнения.

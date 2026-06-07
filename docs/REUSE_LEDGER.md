@@ -1,5 +1,31 @@
 # Reuse Ledger
 
+### REUSE-005
+
+- Source repository: https://github.com/solomonczyk/comfy-agent-mvp
+- Source commit: local reference at F:\ComfyUI\comfy-agent-mvp, exact commit not required because source code was not copied
+- Source path: data/workflows/sdxl_txt2img_template.json
+- Target path: workflows/simple_portrait.json
+- Reuse type: concept_only
+- Reason: Use the standard simple txt2img ComfyUI shape for one controlled image generation.
+- Changes: Wrote a fresh minimal workflow for Avatar Engine with 512x512, batch size 1, 15 steps, neutral fictional prompt, and `SaveImage` prefix under `avatar_engine/<job_id>`.
+- Dependencies: existing local ComfyUI nodes and installed checkpoint only
+- Tests: tests/unit/test_workflow_loader.py, tests/unit/test_workflow_patch_report.py, live preflight artifact under data/jobs/<job_id>/preflight/comfyui_preflight.json
+- License reviewed: source code not copied
+
+### REUSE-006
+
+- Source repository: https://github.com/solomonczyk/comfy-agent-mvp
+- Source commit: local reference at F:\ComfyUI\comfy-agent-mvp, exact commit not required because source code was not copied
+- Source path: ComfyUI submit/history/output collection concepts
+- Target path: src/avatar_engine/integrations/comfyui/client.py, src/avatar_engine/pipeline/stages/comfyui_image.py
+- Reuse type: concept_only
+- Reason: Implement the first real ComfyUI HTTP path while preserving local-only, one-submit constraints.
+- Changes: Implemented fresh typed response handling, timeout, history polling, one-image download, manifest, and operator review packet.
+- Dependencies: httpx, Pillow
+- Tests: tests/unit/test_comfyui_client_responses.py, tests/unit/test_comfyui_wait_timeout.py, tests/unit/test_generation_limit.py, tests/unit/test_image_validation.py, tests/unit/test_real_job_state_transitions.py
+- License reviewed: source code not copied
+
 This file records every copied or adapted component from `solomonczyk/comfy-agent-mvp`.
 
 No source file was copied into Avatar Engine in this bootstrap. The reference repository clone timed out before checkout, so implementation was written as small clean-room modules using only documented concepts. Source HEAD was checked with `git ls-remote`.

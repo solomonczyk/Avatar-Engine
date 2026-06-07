@@ -36,3 +36,45 @@ class JobService:
             input_data["portrait"] = str(Path("data/input/dry_run_portrait.txt"))
             input_data["audio"] = str(Path("data/input/dry_run_audio.txt"))
         return self.repository.create_job(input_data, fake_stage_names())
+
+    def create_comfyui_image_job(
+        self,
+        *,
+        workflow: str,
+        prompt: str,
+        negative_prompt: str,
+        checkpoint: str | None = None,
+        seed: int = 20260607,
+        width: int = 512,
+        height: int = 512,
+        steps: int = 15,
+        cfg: float = 6.5,
+        sampler: str = "euler",
+        scheduler: str = "normal",
+        timeout_seconds: float = 900,
+        poll_interval: float = 2,
+    ) -> str:
+        from avatar_engine.pipeline.stages.comfyui_image import comfyui_image_stage_names
+
+        self.init_db()
+        input_data: dict[str, Any] = {
+            "mode": "comfyui_image",
+            "workflow": workflow,
+            "prompt": prompt,
+            "negative_prompt": negative_prompt,
+            "checkpoint": checkpoint,
+            "seed": seed,
+            "width": width,
+            "height": height,
+            "steps": steps,
+            "cfg": cfg,
+            "sampler": sampler,
+            "scheduler": scheduler,
+            "batch_size": 1,
+            "images_requested": 1,
+            "max_generations": 1,
+            "automatic_retry": False,
+            "timeout_seconds": timeout_seconds,
+            "poll_interval": poll_interval,
+        }
+        return self.repository.create_job(input_data, comfyui_image_stage_names())

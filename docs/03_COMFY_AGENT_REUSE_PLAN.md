@@ -1,5 +1,15 @@
 # 03. Reuse Plan from comfy-agent-mvp
 
+## Current reuse for real image slice
+
+The real ComfyUI image slice uses concept-only reuse from the local `comfy-agent-mvp` reference:
+
+- simple txt2img workflow shape: checkpoint, two text encoders, latent, sampler, VAE decode, SaveImage;
+- submit/history/output collection concepts;
+- artifact manifest concepts.
+
+No `comfy-agent-mvp` source file was modified. No generated media, model weights, or production runtime state was copied.
+
 Источник:
 
 ```text
