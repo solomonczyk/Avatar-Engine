@@ -76,3 +76,14 @@ pytest -q
 avatar-engine init-db
 avatar-engine list-jobs
 ```
+
+## Bootstrap fake execution
+
+```powershell
+avatar-engine init-db
+avatar-engine create-job --dry-run
+avatar-engine run-worker --once --mode fake
+avatar-engine list-jobs
+```
+
+The fake worker writes a job folder under `data/jobs/<job_id>/` and creates `manifest.json`. It does not submit a ComfyUI workflow, run GPU commands, create real video, perform automatic retry, or mark production acceptance.

@@ -71,6 +71,8 @@ They cannot replace the operator’s visual decision.
 pytest -q
 ```
 
+The test suite uses a project-local pytest temp folder under `data/runtime/pytest` so Windows temp-folder permissions do not affect repeatability.
+
 Optional local:
 
 ```powershell

@@ -81,3 +81,9 @@ Avatar Engine/
 - temp files;
 - ComfyUI installation;
 - virtual environments.
+
+## Bootstrap implementation status
+
+The standalone bootstrap now includes the required `src/avatar_engine` package, CLI, SQLite repository, fake pipeline stages, ComfyUI abstraction, tests, and runtime placeholder directories.
+
+Runtime outputs under `data/jobs`, `data/logs`, `data/output`, `data/input`, `data/runtime`, and `data/avatar_engine.db` are ignored by Git. `.gitkeep` files keep the empty runtime folders visible.
